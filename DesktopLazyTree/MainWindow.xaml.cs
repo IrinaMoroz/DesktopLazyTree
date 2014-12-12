@@ -35,10 +35,11 @@ namespace DesktopLazyTree
 
             foreach (DriveInfo d in allDrives)
             {
-                if (d.DriveType != DriveType.Unknown && d.IsReady)
+                if (d.DriveType != DriveType.Unknown && d.IsReady )
                 {
                     TreeViewItem tw = new TreeViewItem();
                     tw.Header = d.Name;
+                    tw.Items.Add("");
                     roots.Add(tw);
                 }
 
@@ -46,33 +47,43 @@ namespace DesktopLazyTree
 
             var tree = sender as TreeView;
             foreach (var it in roots)
+            {
+                
                 tree.Items.Add(it);
+            }
+                
         }
 
-        private void TreeView_SelectedItemChanged(object sender,
-            RoutedPropertyChangedEventArgs<object> e)
+        private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
         {
-            TreeViewItem root = TreeView1.SelectedItem as TreeViewItem;          
+            TreeViewItem root = TreeView1.SelectedItem as TreeViewItem;
+            
+            if (root != null)
+            {
+                if(root.IsExpanded)
+                    root.Items.Remove("");
+                SetSubs(root);                 
+            }
+
+        }
+        private void TreeViewItem_Collapsed(object sender, RoutedEventArgs e) { 
+            TreeViewItem root = TreeView1.SelectedItem as TreeViewItem;
 
             if (root != null)
             {
-                if (root.IsExpanded)
-                    root.IsExpanded = false;
-                else
-                {
-                    root.IsExpanded = true;
-                    SetSubs(root);
-                }
+                root.Items.Clear();
+                root.Items.Add("");
             }
-
         }
 
         private void SetSubs(TreeViewItem root)
         {
+            
             string[] files, subDirs;
-
+           
             if (root != null)
             {
+                root.Items.Remove(1);
                 try
                 {
                     subDirs = System.IO.Directory.GetDirectories((string)root.Header);
@@ -81,10 +92,12 @@ namespace DesktopLazyTree
                     {
                         TreeViewItem child = new TreeViewItem();
                         child.Header = dir;
+                        child.Items.Add("");
                         root.Items.Add(child);
                     }
                     foreach (var fl in files)
                         root.Items.Add(GetNameFromPath(fl));
+                    
                 }
                 catch (UnauthorizedAccessException)
                 {

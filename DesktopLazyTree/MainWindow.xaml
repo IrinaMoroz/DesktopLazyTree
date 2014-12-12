@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="500" Width="600">
     <Grid>
-        <TreeView 
+        <TreeView TreeViewItem.Expanded="TreeViewItem_Expanded" ItemsSource="{Binding}"
+                  TreeViewItem.Collapsed="TreeViewItem_Collapsed" 
+                                            
             x:Name="TreeView1"
 	        Margin="10,10,11,5"       
-	        Loaded="TreeView_Loaded"
-	        SelectedItemChanged="TreeView_SelectedItemChanged"
+	        Loaded="TreeView_Loaded"            
 	        Background="Azure">
         </TreeView>
     </Grid>
