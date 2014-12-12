@@ -1,0 +1,14 @@
+﻿<Window x:Class="DesktopLazyTree.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="500" Width="600">
+    <Grid>
+        <TreeView 
+            x:Name="TreeView1"
+	        Margin="10,10,11,5"       
+	        Loaded="TreeView_Loaded"
+	        SelectedItemChanged="TreeView_SelectedItemChanged"
+	        Background="Azure">
+        </TreeView>
+    </Grid>
+</Window>
