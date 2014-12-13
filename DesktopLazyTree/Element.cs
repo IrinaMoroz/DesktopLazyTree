@@ -31,9 +31,7 @@ namespace DesktopLazyTree
 
         private string GetNameFromPath(string path)
         {
-            StringBuilder sb = new StringBuilder();
             int lastIdx = path.LastIndexOf("\\");
-            int firstIdx = path.IndexOf("\\");
             string name = path;
             if(path.IndexOf("\\") != path.Length-1)
                 name = path.Substring(lastIdx + 1);

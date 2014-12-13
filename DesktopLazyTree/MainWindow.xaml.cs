@@ -86,8 +86,7 @@ namespace DesktopLazyTree
 
 
         private void SetSubDirs(TreeViewItem root)
-        {
-          
+        {          
             string[] subDirs = System.IO.Directory.GetDirectories(((Element)root.Header).Path);
           
             foreach (var dir in subDirs)
