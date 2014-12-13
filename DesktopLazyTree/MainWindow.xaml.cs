@@ -21,8 +21,7 @@ namespace DesktopLazyTree
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        
+    {        
         public MainWindow()
         {
             InitializeComponent();
@@ -38,7 +37,8 @@ namespace DesktopLazyTree
                 if (d.DriveType != DriveType.Unknown && d.IsReady )
                 {
                     TreeViewItem tw = new TreeViewItem();
-                    tw.Header = d.Name;
+                    Element el = new Element(d.Name, true);
+                    tw.Header = el;
                     tw.Items.Add("");
                     roots.Add(tw);
                 }
@@ -47,8 +47,7 @@ namespace DesktopLazyTree
 
             var tree = sender as TreeView;
             foreach (var it in roots)
-            {
-                
+            {                
                 tree.Items.Add(it);
             }
                 
@@ -56,23 +55,26 @@ namespace DesktopLazyTree
 
         private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
         {
-            TreeViewItem root = TreeView1.SelectedItem as TreeViewItem;
+            TreeViewItem root = e.Source as TreeViewItem;
             
             if (root != null)
-            {
-                if(root.IsExpanded)
-                    root.Items.Remove("");
-                SetSubs(root);                 
+            {                
+                root.Items.Remove("");
+                if (((Element)root.Header).IsFolder)
+                    SetSubs(root);                 
             }
 
         }
-        private void TreeViewItem_Collapsed(object sender, RoutedEventArgs e) { 
-            TreeViewItem root = TreeView1.SelectedItem as TreeViewItem;
+        private void TreeViewItem_Collapsed(object sender, RoutedEventArgs e) {
+            TreeViewItem root = e.Source as TreeViewItem;
 
             if (root != null)
             {
-                root.Items.Clear();
-                root.Items.Add("");
+                if (!root.Items.IsEmpty)
+                {
+                    root.Items.Clear();
+                    root.Items.Add("");
+                }                    
             }
         }
 
@@ -82,37 +84,38 @@ namespace DesktopLazyTree
             string[] files, subDirs;
            
             if (root != null)
-            {
-                root.Items.Remove(1);
+            {                
                 try
                 {
-                    subDirs = System.IO.Directory.GetDirectories((string)root.Header);
-                    files = System.IO.Directory.GetFiles((string)root.Header);
+                    subDirs = System.IO.Directory.GetDirectories(((Element)root.Header).Path);
+                    files = System.IO.Directory.GetFiles(((Element)root.Header).Path);
                     foreach (var dir in subDirs)
                     {
+                        root.Items.Remove("");
                         TreeViewItem child = new TreeViewItem();
-                        child.Header = dir;
+                        Element el = new Element(dir, true);
+                        child.Header = el;
                         child.Items.Add("");
                         root.Items.Add(child);
                     }
+
                     foreach (var fl in files)
-                        root.Items.Add(GetNameFromPath(fl));
+                    {
+                        Element el = new Element(fl, false);
+                        TreeViewItem child = new TreeViewItem();
+                        child.Header = el;
+                        root.Items.Add(child);
+                    }
+                        
                     
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(String.Format("You have no Access to {0}", (string)root.Header));
+                    MessageBox.Show(String.Format("You have no Access to {0}", ((Element)root.Header).Path));
                 }
             }
         }
 
-        private string GetNameFromPath(string path)
-        {
-            StringBuilder sb = new StringBuilder();
-            int idx = path.LastIndexOf("\\");
-            string name = path.Substring(idx + 1);
-            return name;
-        }
     }
 
 }
