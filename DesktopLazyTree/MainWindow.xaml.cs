@@ -61,14 +61,16 @@ namespace DesktopLazyTree
         private void TreeViewItem_Collapsed(object sender, RoutedEventArgs e) {
             TreeViewItem root = e.Source as TreeViewItem;
 
-            if (root != null)
+            if (root == null)
             {
-                if (!root.Items.IsEmpty)
-                {
-                    root.Items.Clear();
-                    root.Items.Add("");
-                }                    
+                return;
             }
+            if (root.Items.IsEmpty)
+            {
+                return;
+            }
+            root.Items.Clear();
+            root.Items.Add("");
         }
 
         private void SetSubs(TreeViewItem root)
